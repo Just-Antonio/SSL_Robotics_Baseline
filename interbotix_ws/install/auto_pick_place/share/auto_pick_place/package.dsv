@@ -1,0 +1,12 @@
+source;share/auto_pick_place/hook/path.ps1
+source;share/auto_pick_place/hook/path.dsv
+source;share/auto_pick_place/hook/path.sh
+source;share/auto_pick_place/hook/pythonpath.ps1
+source;share/auto_pick_place/hook/pythonpath.dsv
+source;share/auto_pick_place/hook/pythonpath.sh
+source;share/auto_pick_place/hook/pythonscriptspath.ps1
+source;share/auto_pick_place/hook/pythonscriptspath.dsv
+source;share/auto_pick_place/hook/pythonscriptspath.sh
+source;../../build/auto_pick_place/share/auto_pick_place/hook/pythonpath_develop.ps1
+source;../../build/auto_pick_place/share/auto_pick_place/hook/pythonpath_develop.dsv
+source;../../build/auto_pick_place/share/auto_pick_place/hook/pythonpath_develop.sh
