@@ -1,0 +1,11 @@
+# Python dependencies (pip)
+
+numpy
+opencv-python
+pytest
+pytest-mock
+tf-transformations
+
+# Note: rclpy and cv_bridge are provided by your ROS distribution and are typically
+# installed via apt (ros-<distro>-rclpy, ros-<distro>-cv-bridge). Keep this file for
+# reproducible Python-only deps; install ROS packages using the bootstrap script below.

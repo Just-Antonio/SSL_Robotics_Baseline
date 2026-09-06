@@ -26,7 +26,7 @@ The Smart Systems Lab's baseline code for 7-DoF WidowX robotic arms: computer-vi
 ```
 README.md
 LICENSE
-documentation.txt                 # developer notes and setup hints
+docs/                              # developer notes and setup hints (moved from documentation.txt)
 interbotix_ws/                     # ROS workspace layout (install, src, log)
   install/
   log/
@@ -35,12 +35,38 @@ scripts/
   pick_place.py                     # simple pick & place (point-cloud clusters)
   color_sorter.py                   # detect clusters + sort by color into baskets
   ollama_pick_place.py              # ask "find the red ball" via Ollama vision model
+requirements.txt                    # Python deps for reproducible installs
+bootstrap.sh                         # bootstrap script to install ROS + Python deps and build a workspace
+tests/                              # pytest unit tests for helpers
 .gitignore
 ```
 
 How it fits together:
 - The ROS workspace (interbotix_ws) holds Interbotix packages used at runtime. The scripts use Interbotix Python APIs to get clusters from the perception stack, convert cluster centres into poses, and command the manipulator end effector.
 - scripts/* are the runnable demos. Each script expects the Interbotix perception nodes and ROS TFs to be available.
+
+---
+
+## Installation & requirements
+- Python-only deps are listed in requirements.txt. Install them with:
+
+```bash
+python3 -m pip install -r requirements.txt
+```
+
+- ROS packages (rclpy, cv_bridge, Interbotix system packages) should be installed via apt / rosdep. A helper bootstrap script is provided (bootstrap.sh). Example usage:
+
+```bash
+sudo ROS_DISTRO=humble ./bootstrap.sh
+```
+
+- After installing Interbotix packages into a ROS workspace (see bootstrap.sh), remember to source the workspace:
+
+```bash
+source interbotix_ws/install/setup.bash
+```
+
+- Developer notes and additional setup guidance are available at docs/index.md.
 
 ---
 
@@ -58,7 +84,7 @@ git clone https://github.com/Just-Antonio/SSL_Robotics_Baseline.git
 cd SSL_Robotics_Baseline
 ```
 
-Launch the Interbotix perception stack (example; matches documentation.txt):
+Launch the Interbotix perception stack (example; matches docs/index.md):
 ```bash
 # Start interbotix XSARM perception with AR tag tuner and pointcloud tuner GUI
 ros2 launch interbotix_xsarm_perception xsarm_perception.launch.py \
@@ -95,7 +121,7 @@ python3 scripts/ollama_pick_place.py
 
 ### scripts/color_sorter.py
 - Behavior: Reads cluster color information and places objects into different drop locations depending on the hue (color thresholds implemented in color_compare()).
-- Important: documentation.txt suggests running the Interbotix perception launch for wx200 (example in the script comments) but script uses `wx250s` in code — ensure robot_model argument and the script ROBOT_MODEL match your hardware.
+- Important: docs/index.md suggests running the Interbotix perception launch for wx200 (example in the script comments) but script uses `wx250s` in code — ensure robot_model argument and the script ROBOT_MODEL match your hardware.
 - Running: `python3 scripts/color_sorter.py`
 - Notes: Requires a well-calibrated camera to locate baskets and AR tag position.
 
@@ -160,13 +186,30 @@ python3 scripts/ollama_pick_place.py
   2. Visualize clusters using the pointcloud tuner and confirm cluster centers.
   3. Run pick_place.py to verify safe pick/place cycles on simple objects.
 
+You can run the pytest suite with:
+
+```bash
+pytest -q
+```
+
 ---
 
 ## Contributing
 - Contributions welcome. For code additions:
   - Follow ROS 2 and Python style used in existing scripts.
-  - Add documentation for new scripts or dependencies in documentation.txt and update this README.
+  - Add documentation for new scripts or dependencies in docs/index.md and update this README.
 - Opening issues: include logs, which script you ran, exact TF warnings, and camera topic names.
+
+---
+
+## Future improvements / roadmap
+- Add simulation support (Gazebo / Ignition) and CI that runs basic integration tests in a simulated environment.
+- Add more robust perception: instance segmentation (Mask R-CNN or SAM) to complement point-cloud clustering.
+- Add closed-loop reactive grasping with visual servoing and failure recovery.
+- Integrate grasp synthesis (Dex-Net or learned grasp proposals) for better grasp success rates.
+- Add multi-robot collaborative behaviors and a task scheduler for coordinated pick & place.
+- Replace the ad-hoc color heuristics with a learned classifier and add calibration utilities for lighting conditions.
+- Add a packaged Python module (setup.cfg / pyproject.toml) and proper unit test coverage with CI.
 
 ---
 
@@ -182,7 +225,7 @@ This repository includes a LICENSE file at the top level. Check LICENSE for allo
 ---
 
 ## Where to look next (files of interest)
-- documentation.txt — longer notes and setup hints.
+- docs/index.md — longer notes and setup hints.
 - scripts/pick_place.py — baseline pick & place flow.
 - scripts/color_sorter.py — color-based sorter logic and hue thresholds.
 - scripts/ollama_pick_place.py — integration with Ollama vision model and camera projection code.
